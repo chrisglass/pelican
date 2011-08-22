@@ -211,7 +211,7 @@ class ArticlesGenerator(Generator):
         files = self.get_files(self.path, exclude=['pages',])
         all_articles = []
         for f in files:
-            content, metadata = read_file(f)
+            content, metadata = read_file(f, settings=self.settings)
 
             # if no category is set, use the name of the path as a category
             if 'category' not in metadata.keys():
@@ -219,7 +219,7 @@ class ArticlesGenerator(Generator):
                 if os.path.dirname(f) == self.path:
                     category = self.settings['DEFAULT_CATEGORY']
                 else:
-                    category = os.path.basename(os.path.dirname(f))
+                    category = os.path.basename(os.path.dirname(f)).decode('utf-8')
 
                 if category != '':
                     metadata['category'] = unicode(category)
@@ -392,11 +392,12 @@ class PdfGenerator(Generator):
         # since we write our own files
         info(u' Generating PDF files...')
         pdf_path = os.path.join(self.output_path, 'pdf')
-        try:
-            os.mkdir(pdf_path)
-        except OSError:
-            error("Couldn't create the pdf output folder in " + pdf_path)
-            pass
+        if not os.path.exists(pdf_path):
+            try:
+                os.mkdir(pdf_path)
+            except OSError:
+                error("Couldn't create the pdf output folder in " + pdf_path)
+                pass
 
         for article in self.context['articles']:
             self._create_pdf(article, pdf_path)

@@ -24,8 +24,9 @@ Basic settings
 ================================================    =====================================================
 Setting name (default value)                        what does it do?
 ================================================    =====================================================
+`ARTICLE_PERMALINK_STRUCTURE` (``''``)              Empty by default. Allows to render URLs in a
+                                                    particular way, see below.
 `AUTHOR`                                            Default author (put your name)
-`SITENAME` (``'A Pelican Blog'``)                   Your site name
 `DATE_FORMATS` (``{}``)                             If you do manage multiple languages, you can
                                                     set the date formatting here.
 `DEFAULT_CATEGORY` (``'misc'``)                     The default category to fallback on.
@@ -46,6 +47,10 @@ Setting name (default value)                        what does it do?
 `MARKUP` (``('rst', 'md')``)                        A list of available markup languages you want
                                                     to use. For the moment, only available values
                                                     are `rst` and `md`.
+`MD_EXTENSIONS` (``('codehilite','extra')``)        A list of the extensions that the markdown processor
+                                                    will use. Refer to the extensions chapter in the
+                                                    Python-Markdown documentation for a complete list of
+                                                    supported extensions.
 `OUTPUT_PATH` (``'output/'``)                       Where to output the generated files.
 `PATH` (``None``)                                   path to look at for input files.
 `PDF_GENERATOR` (``False``)                         Set to True if you want to have PDF versions
@@ -53,6 +58,7 @@ Setting name (default value)                        what does it do?
                                                     `rst2pdf`.
 `RELATIVE_URLS` (``True``)                          Defines if pelican should use relative urls or
                                                     not.
+`SITENAME` (``'A Pelican Blog'``)                   Your site name
 `SITEURL`                                           base URL of your website. Note that this is
                                                     not a way to tell pelican to use relative urls
                                                     or static ones. You should rather use the
@@ -61,38 +67,53 @@ Setting name (default value)                        what does it do?
                                                     on the output path "static". By default,
                                                     pelican will copy the 'images' folder to the
                                                     output folder.
-`ARTICLE_PERMALINK_STRUCTURE` (``''``)              Empty by default. Allows to render URLs for 
-                                                    articles sorted by date, in case you specify a 
-                                                    format as specified in the example.
-                                                    It follows the python datetime directives:
-                                                     * %Y: Year with century as a decimal number.
-                                                     * %m: Month as a decimal number [01,12].
-                                                     * %d: Day of the month as a decimal number [01,31].
-
-                                                     Note: if you specify a datetime directive, it will
-                                                     be substituted using the date metadata field into 
-                                                     the rest file. if the date is not specified, pelican
-                                                     will rely on the mtime of your file.
-
-                                                     Check the python datetime documentation 
-                                                     at http://bit.ly/cNcJUC for more information.
-                                                    
-                                                    Also, you can use any metadata in the 
-                                                    restructured text files:
-                                                     * category: '%(category)s'
-                                                     * author: '%(author)s'
-                                                     * tags: '%(tags)s'
-                                                     * date: '%(date)s'
-
-                                                    Example usage:
-                                                     * '/%Y/%m/' it will be something like 
-                                                       '/2011/07/sample-post.html'.
-                                                     * '/%Y/%(category)s/' it will be something like
-                                                       '/2011/life/sample-post.html'.
+`TIMEZONE`                                          The timezone used in the date information, to
+                                                    generate atom and rss feeds.
 ================================================    =====================================================
 
-
 .. [1] Default is the system locale. Default is to delete the output directory.
+
+Article permalink structure
+---------------------------
+Allow to render articles sorted by date, in case you specify a format as
+specified in the example.  It follows the python datetime directives: 
+
+* %Y: Year with century as a decimal number.  
+* %m: Month as a decimal number [01,12].  
+* %d: Day of the month as a decimal number [01,31].
+
+Note: if you specify a datetime directive, it will be substituted using the
+date metadata field into the rest file. if the date is not specified, pelican
+will rely on the mtime of your file.
+
+Check the python datetime documentation at http://bit.ly/cNcJUC for more
+information.
+
+Also, you can use any metadata in the restructured text files: 
+
+* category: '%(category)s' 
+* author: '%(author)s' 
+* tags: '%(tags)s' 
+* date: '%(date)s'
+
+Example usage: 
+
+* '/%Y/%m/' it will be something like '/2011/07/sample-post.html'.  
+* '/%Y/%(category)s/' it will be something like '/2011/life/sample-post.html'.
+
+Timezone
+--------
+
+If no timezone is defined, UTC is assumed. This means that the generated atom
+and rss feeds will have wrong date information if your locale is not UTC.
+
+Pelican issues a warning in case this setting is not defined, as it was not
+mandatory in old versions.
+
+Have a look at `the wikipedia page`_ to get a list of values to set your
+timezone.
+
+.. _the wikipedia page: http://en.wikipedia.org/wiki/List_of_tz_database_time_zones
 
 Feed settings
 =============
@@ -196,7 +217,7 @@ Setting name (default value)                        what does it do?
 Theming
 =======
 
-Theming is addressed in a dedicated section (see  :ref:`theming-pelican`).
+Theming is addressed in a dedicated section (see :ref:`theming-pelican`).
 However, here are the settings that are related to theming.
 
 ================================================    =====================================================
@@ -257,64 +278,6 @@ In addition, you can use the "wide" version of the `notmyidea` theme, by
 adding that in your configuration::
 
     CSS_FILE = "wide.css"
-
-Skribit
--------
-
-Skribit has two ways to display suggestions : as a sidebar widget or as a
-suggestions tab. You can choose one of the display by setting the SKRIBIT_TYPE
-in your config.
-
- * SKRIBIT_WIDGET_ID : the identifier of your blog.
-
-All the customizations are done in the skribit web interface.
-
-To retrieve your identifier from the code snippet, you can use this python code::
-
-    import re
-    regex = re.compile('.*http://assets.skribit.com/javascripts/SkribitWidget.\
-        js\?renderTo=writeSkribitHere&amp;blog=(.*)&amp;.*')
-    snippet = '''SNIPPET CONTENT'''
-    snippet = snippet.replace('\n', '')
-    identifier = regex.match(snippet).groups()[0]
-
-Suggestion tab
---------------
-
-The setting for suggestion tab's customizations are :
-
- * SKRIBIT_TAB_COLOR
- * SKRIBIT_TAB_DISTANCE_HORIZ
- * SKRIBIT_TAB_DISTANCE_VERT
- * SKRIBIT_TAB_PLACEMENT
-
-The identifier is :
-
- * SKRIBIT_TAB_SITENAME : the identifier of your blog
-
-To retrieve your sitename from the code snippet, you can use this python code::
-
-    import re
-    regex = re.compile('.*http://skribit.com/lightbox/(.*)\',.*')
-    snippet = '''SNIPPET CONTENT'''
-    snippet = snippet.replace('\n', '')
-    identifier = regex.match(snippet).groups()[0]
-
-Skribit settings
-----------------
-
-================================================    =====================================================
-Setting name (default value)                        what does it do?
-================================================    =====================================================
-`SKRIBIT_TYPE`                                      The type of skribit widget (TAB or WIDGET).
-`SKRIBIT_TAB_COLOR`                                 Tab color (#XXXXXX, default #333333).
-`SKRIBIT_TAB_HORIZ`                                 Tab Distance from Left (% or distance, default Null).
-`SKRIBIT_TAB_VERT`                                  Tab Distance from Top (% or distance, default 20%).
-`SKRIBIT_TAB_PLACEMENT`                             Tab placement (Top, Bottom, Left or Right,
-                                                    default LEFT).
-`SKRIBIT_TAB_SITENAME`                              Tab identifier (See Skribit part below).
-`SKRIBIT_WIDGET_ID`                                 Widget identifier (See Skribit part below).
-================================================    =====================================================
 
 .. _pelican-themes: :doc:`pelican-themes`
 

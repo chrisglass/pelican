@@ -4,7 +4,7 @@ import sys
 
 VERSION = "2.7.2" # find a better way to do so.
 
-requires = ['feedgenerator', 'jinja2', 'pygments', 'docutils']
+requires = ['feedgenerator', 'jinja2', 'pygments', 'docutils', 'pytz']
 if sys.version_info < (2,7):
     requires.append('argparse')
 
@@ -19,7 +19,7 @@ setup(
     packages = ['pelican'],
     include_package_data = True,
     install_requires = requires,
-    scripts = ['bin/pelican', 'tools/pelican-themes'],
+    scripts = ['bin/pelican', 'tools/pelican-themes', 'tools/pelican-import', 'tools/pelican-quickstart'],
     classifiers = ['Development Status :: 5 - Production/Stable',
                    'Environment :: Console',
                    'License :: OSI Approved :: GNU Affero General Public License v3',
